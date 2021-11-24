@@ -1,8 +1,0 @@
-prefix=/home/havard/turtle_ws/install
-
-Name: turtlebot3_example
-Description: Description of turtlebot3_example
-Version: 1.2.5
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib 
-Requires: rospy actionlib interactive_markers std_msgs sensor_msgs geometry_msgs nav_msgs visualization_msgs actionlib_msgs turtlebot3_msgs message_runtime

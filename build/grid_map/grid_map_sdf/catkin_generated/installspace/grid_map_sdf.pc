@@ -1,8 +1,0 @@
-prefix=/home/havard/turtle_ws/install
-
-Name: grid_map_sdf
-Description: Description of grid_map_sdf
-Version: 1.6.6
-Cflags: -I${prefix}/include
-Libs: -L${prefix}/lib -lgrid_map_sdf
-Requires: grid_map_core pcl_ros
