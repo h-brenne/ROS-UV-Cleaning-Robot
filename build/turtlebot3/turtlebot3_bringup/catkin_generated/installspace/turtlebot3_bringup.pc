@@ -1,0 +1,8 @@
+prefix=/home/havard/turtle_ws/install
+
+Name: turtlebot3_bringup
+Description: Description of turtlebot3_bringup
+Version: 1.2.5
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: roscpp std_msgs sensor_msgs diagnostic_msgs turtlebot3_msgs

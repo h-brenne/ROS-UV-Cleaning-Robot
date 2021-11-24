@@ -1,0 +1,8 @@
+prefix=/home/havard/turtle_ws/install
+
+Name: grid_map_rviz_plugin
+Description: Description of grid_map_rviz_plugin
+Version: 1.6.6
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib -lgrid_map_rviz_plugin
+Requires: rviz grid_map_ros grid_map_msgs
