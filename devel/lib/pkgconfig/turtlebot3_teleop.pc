@@ -1,8 +1,0 @@
-prefix=/home/havard/turtle_ws/devel
-
-Name: turtlebot3_teleop
-Description: Description of turtlebot3_teleop
-Version: 1.2.5
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: rospy geometry_msgs

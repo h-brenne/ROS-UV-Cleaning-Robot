@@ -1,8 +1,0 @@
-prefix=/home/havard/turtle_ws/devel
-
-Name: turtlebot3_msgs
-Description: Description of turtlebot3_msgs
-Version: 1.0.1
-Cflags: -I/home/havard/turtle_ws/devel/include
-Libs: -L${prefix}/lib 
-Requires: std_msgs message_runtime

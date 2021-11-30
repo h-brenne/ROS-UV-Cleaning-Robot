@@ -1,8 +1,0 @@
-prefix=/home/havard/turtle_ws/devel
-
-Name: turtlebot3_navigation
-Description: Description of turtlebot3_navigation
-Version: 1.2.5
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 

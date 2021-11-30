@@ -1,8 +1,0 @@
-prefix=/home/havard/turtle_ws/devel
-
-Name: grid_map_ros
-Description: Description of grid_map_ros
-Version: 1.6.6
-Cflags: -I/home/havard/turtle_ws/src/grid_map/grid_map_ros/include
-Libs: -L${prefix}/lib -lgrid_map_ros
-Requires: roscpp grid_map_core grid_map_msgs grid_map_cv sensor_msgs nav_msgs std_msgs geometry_msgs cv_bridge rosbag tf visualization_msgs
