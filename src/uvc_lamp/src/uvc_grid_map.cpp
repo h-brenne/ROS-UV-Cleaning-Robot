@@ -7,6 +7,27 @@
 
 using namespace grid_map;
 
+void iterate_visual_line(GridMap &map, const Position pos, double angle, double max_range){
+  Index start, end;
+  Position start_pos, end_pos;
+  
+  map.getIndex(pos, start);
+  start_pos = map.getClosestPositionInMap(pos);
+  end_pos.x() = start_pos.x() + max_range * cos(angle);
+  end_pos.y() = start_pos.y() + max_range * sin(angle);
+  map.getIndex(end_pos, end);
+  
+  for (grid_map::LineIterator iterator(map, start, end);
+      !iterator.isPastEnd(); ++iterator) {
+    if(map.at("occupancy", *iterator) < 1.0){
+
+      map.at("visual", *iterator) = 1.0;
+    }
+    else{
+      break;
+    }
+  }
+}
 int main(int argc, char** argv)
 {
   // Initialize node and publisher.
@@ -19,7 +40,7 @@ int main(int argc, char** argv)
   ros::ServiceClient client = n.serviceClient<nav_msgs::GetMap>("static_map");
   nav_msgs::OccupancyGrid o_grid;
   nav_msgs::GetMap srv;
-  GridMap o_map({"occupancy", "energy"});
+  GridMap o_map({"occupancy", "energy", "visual"});
   o_map.setFrameId("map");
   if (client.call(srv)){
     ROS_INFO("Got map, resoltion:%f", srv.response.map.info.resolution);
@@ -30,6 +51,9 @@ int main(int argc, char** argv)
     }
   o_map["energy"].setConstant(0.0);
 
+  Eigen::Array<int, 2, 1> z0(400,400);
+  
+  ROS_INFO("MAP TEST: %f", o_map.at("occupancy",z0));
   // Setup tf listener to get robot position
   tf::TransformListener listener;
   tf::StampedTransform transform;
@@ -53,19 +77,29 @@ int main(int argc, char** argv)
       continue;
     }
     Position robot_pos(transform.getOrigin().x(),transform.getOrigin().y());
+    
+    //Update visual line of sight layer
+    o_map.clear("visual");
+    int angle_increments = 1000;
+    for(int i = 0; i<angle_increments; i++){
+      double angle = i*2*M_PI/angle_increments;
+      iterate_visual_line(o_map, robot_pos, angle, 10.0);
+    }
+    
+    
+    //Iterate through cells within a radius, accumulate UVC energy
+    //TODO: Mask with visibility due to obstacles.
 
-    //Iterate through cells whitin a radius, accumulate UVC energy
-    //TODO: Mask with visibility due to obstacles. 
     double energy_radius = 5; 
-    double uvc_power = 0.1; //mW 
+    double uvc_power = 0.0001; //W 
     for (CircleIterator iterator(o_map, robot_pos, energy_radius);
       !iterator.isPastEnd(); ++iterator) {
         Position grid_pos;
         o_map.getPosition(*iterator, grid_pos);
         double dist = sqrt(pow(grid_pos.x()-robot_pos.x(),2) + pow(grid_pos.y()-robot_pos.y(),2));
         if(dist>0.1){
-          o_map.at("energy", *iterator) += uvc_power*sampling_time/pow(dist,2);
-          ROS_INFO("Power: %f, dist: %f",o_map.at("energy", *iterator), dist); 
+          o_map.at("energy", *iterator) += 100*uvc_power*sampling_time/pow(dist,2);
+          //ROS_INFO("Power: %f, dist: %f",o_map.at("energy", *iterator), dist); 
         }
       }
 
