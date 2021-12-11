@@ -53,7 +53,6 @@ int main(int argc, char** argv)
 
   Eigen::Array<int, 2, 1> z0(400,400);
   
-  ROS_INFO("MAP TEST: %f", o_map.at("occupancy",z0));
   // Setup tf listener to get robot position
   tf::TransformListener listener;
   tf::StampedTransform transform;
@@ -80,7 +79,7 @@ int main(int argc, char** argv)
     
     //Update visual line of sight layer
     o_map.clear("visual");
-    int angle_increments = 1000;
+    int angle_increments = 800;
     for(int i = 0; i<angle_increments; i++){
       double angle = i*2*M_PI/angle_increments;
       iterate_visual_line(o_map, robot_pos, angle, 10.0);
@@ -88,16 +87,15 @@ int main(int argc, char** argv)
     
     
     //Iterate through cells within a radius, accumulate UVC energy
-    //TODO: Mask with visibility due to obstacles.
 
-    double energy_radius = 5; 
-    double uvc_power = 0.0001; //W 
+    double energy_radius = 3; 
+    double uvc_power = 0.001; //W 
     for (CircleIterator iterator(o_map, robot_pos, energy_radius);
       !iterator.isPastEnd(); ++iterator) {
         Position grid_pos;
         o_map.getPosition(*iterator, grid_pos);
         double dist = sqrt(pow(grid_pos.x()-robot_pos.x(),2) + pow(grid_pos.y()-robot_pos.y(),2));
-        if(dist>0.1){
+        if(dist>0.1 && o_map.at("visual", *iterator) > 0){
           o_map.at("energy", *iterator) += 100*uvc_power*sampling_time/pow(dist,2);
           //ROS_INFO("Power: %f, dist: %f",o_map.at("energy", *iterator), dist); 
         }

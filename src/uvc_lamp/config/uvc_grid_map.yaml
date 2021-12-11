@@ -1,7 +1,7 @@
 grid_map_topic: /uvc_grid_map/grid_map
 grid_map_visualizations:
-  - name: elevation_points
-    type: point_cloud
+  - name: uvc_energy
+    type: flat_point_cloud
     params:
      layer: energy
   - name: occ_grid
