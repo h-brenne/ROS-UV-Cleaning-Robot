@@ -37,5 +37,5 @@
     </node>
 
     <!-- rviz -->
-    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find full_coverage_path_planner)/test/full_coverage_path_planner/fcpp.rviz" />
+    <node name="rviz3" pkg="rviz" type="rviz" args="-d $(find full_coverage_path_planner)/test/full_coverage_path_planner/fcpp.rviz" />
 </launch>
