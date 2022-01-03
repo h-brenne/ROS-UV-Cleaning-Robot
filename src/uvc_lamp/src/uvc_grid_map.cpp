@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     }
   o_map["energy"].setConstant(0.0);
 
-  Eigen::Array<int, 2, 1> z0(400,400);
+  //Eigen::Array<int, 2, 1> z0(400,400);
   
   // Setup tf listener to get robot position
   tf::TransformListener listener;
@@ -85,18 +85,16 @@ int main(int argc, char** argv)
       iterate_visual_line(o_map, robot_pos, angle, 10.0);
     }
     
-    
     //Iterate through cells within a radius, accumulate UVC energy
-
     double energy_radius = 3; 
-    double uvc_power = 0.001; //W 
+    double uvc_power = 0.1; //mW 
     for (CircleIterator iterator(o_map, robot_pos, energy_radius);
       !iterator.isPastEnd(); ++iterator) {
         Position grid_pos;
         o_map.getPosition(*iterator, grid_pos);
         double dist = sqrt(pow(grid_pos.x()-robot_pos.x(),2) + pow(grid_pos.y()-robot_pos.y(),2));
         if(dist>0.1 && o_map.at("visual", *iterator) > 0){
-          o_map.at("energy", *iterator) += 100*uvc_power*sampling_time/pow(dist,2);
+          o_map.at("energy", *iterator) += uvc_power*sampling_time/pow(dist,2);
           //ROS_INFO("Power: %f, dist: %f",o_map.at("energy", *iterator), dist); 
         }
       }
@@ -105,8 +103,7 @@ int main(int argc, char** argv)
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(o_map, message);
     publisher.publish(message);
-    ROS_INFO_THROTTLE(1.0, "UVC Energy Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
-
+    //ROS_INFO_THROTTLE(3, "UVC Energy Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
     // Wait for next cycle.
     rate.sleep();
   }

@@ -142,6 +142,11 @@ add_executable(uvc_grid_map
 	src/uvc_grid_map.cpp
 	)
 target_link_libraries(uvc_grid_map ${catkin_LIBRARIES})
+
+add_executable(uvc_progress
+	src/uvc_progress.cpp
+	)
+target_link_libraries(uvc_progress ${catkin_LIBRARIES})
 #add_dependencies(uvc_grid_map uvc_lamp_uvc_grid_map_cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
