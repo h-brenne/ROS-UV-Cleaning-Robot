@@ -4,9 +4,14 @@
 #include <tf/transform_listener.h>
 #include <nav_msgs/GetMap.h>
 #include <cmath>
+#include <std_srvs/Empty.h>
+
 
 using namespace grid_map;
 
+GridMap o_map({"occupancy", "energy", "visual"});
+
+//Breitneberg ray tracing
 void iterate_visual_line(GridMap &map, const Position pos, double angle, double max_range){
   Index start, end;
   Position start_pos, end_pos;
@@ -28,6 +33,12 @@ void iterate_visual_line(GridMap &map, const Position pos, double angle, double 
     }
   }
 }
+
+bool reset_uv(std_srvs::Empty::Request& request, std_srvs::Empty::Response& response){
+  o_map["energy"].setConstant(0.0);
+  ROS_INFO("Cleared UV");
+  return true;
+}
 int main(int argc, char** argv)
 {
   // Initialize node and publisher.
@@ -40,7 +51,7 @@ int main(int argc, char** argv)
   ros::ServiceClient client = n.serviceClient<nav_msgs::GetMap>("static_map");
   nav_msgs::OccupancyGrid o_grid;
   nav_msgs::GetMap srv;
-  GridMap o_map({"occupancy", "energy", "visual"});
+  
   o_map.setFrameId("map");
   if (client.call(srv)){
     ROS_INFO("Got map, resoltion:%f", srv.response.map.info.resolution);
@@ -53,6 +64,9 @@ int main(int argc, char** argv)
 
   //Eigen::Array<int, 2, 1> z0(400,400);
   
+  //Start service to reset energy
+  ros::ServiceServer reset_uv_service = n.advertiseService("reset_uv", reset_uv);
+
   // Setup tf listener to get robot position
   tf::TransformListener listener;
   tf::StampedTransform transform;
@@ -68,10 +82,11 @@ int main(int argc, char** argv)
     
     //Get the robot position in the map
     try{
-      listener.lookupTransform("/map","/base_link",ros::Time(0), transform);
+      listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(10.0) );
+      listener.lookupTransform("odom","base_footprint",ros::Time(0), transform);
     }
     catch(tf::TransformException &ex){
-      ROS_ERROR("%s",ex.what());
+      ROS_ERROR("%s Test",ex.what());
       ros::Duration(1.0).sleep();
       continue;
     }
