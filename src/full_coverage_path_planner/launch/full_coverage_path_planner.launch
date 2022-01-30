@@ -11,6 +11,10 @@
     <arg name="tool_radius" default="0.2"/>
     <arg name="rviz" default="true"/>
 
+    <arg name="initial_pose_x" default="0.0"/>
+    <arg name="initial_pose_y" default="0.0"/>
+    <arg name="initial_pose_a" default="0.0"/>
+
    <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
    <arg name="move_forward_only" default="false"/>
 
@@ -18,9 +22,13 @@
   <include file="$(find turtlebot3_bringup)/launch/turtlebot3_remote.launch">
     <arg name="model" value="$(arg model)" />
   </include>
-
+  
     <!-- AMCL -->
-    <include file="$(find turtlebot3_navigation)/launch/amcl.launch"/>
+    <include file="$(find turtlebot3_navigation)/launch/amcl.launch">
+        <arg name="initial_pose_x" value="$(arg initial_pose_x)"/>
+        <arg name="initial_pose_y" value="$(arg initial_pose_y)"/>
+        <arg name="initial_pose_a" value="$(arg initial_pose_a)"/>
+  </include>
 
      <!--Move base flex, using the full_coverage_path_planner-->
    <node pkg="mbf_costmap_nav" type="mbf_costmap_nav" respawn="false" name="move_base_flex" output="screen" required="true">
@@ -74,7 +82,6 @@
         <param name="Kd_lat" value="0.3"/>
     </node>
 
-
     <!-- Launch coverage progress tracking -->
     <node pkg="tf" type="static_transform_publisher" name="map_to_coveragemap" args="$(arg coverage_area_offset) map coverage_map 100" />
     <node pkg="full_coverage_path_planner" type="coverage_progress" name="coverage_progress">
@@ -90,5 +97,5 @@
         args = "pub --latch /move_base/goal move_base_msgs/MoveBaseActionGoal --file=$(find full_coverage_path_planner)/test/simple_goal.yaml"/>
 
     <!-- rviz -->
-    <node if="$(eval rviz)" name="rviz2" pkg="rviz" type="rviz" args="-d $(find full_coverage_path_planner)/test/full_coverage_path_planner/fcpp.rviz" />
+    <node if="$(eval rviz)" name="rviz_fcpp" pkg="rviz" type="rviz" args="-d $(find full_coverage_path_planner)/rviz/fcpp.rviz" />
 </launch>
