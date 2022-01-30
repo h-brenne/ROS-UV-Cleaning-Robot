@@ -157,7 +157,7 @@ int main(int argc, char** argv)
   ros::Publisher pos_publisher = nh2.advertise<std_msgs::Float32MultiArray>("maps", 100, true);
 
   // Work with grid map in a loop.
-  double sampling_rate = 5.0;
+  double sampling_rate = 10.0;
   double sampling_time = 1/sampling_rate;
   ros::Rate rate(sampling_rate);
   while (nh.ok()) {
@@ -182,14 +182,15 @@ int main(int argc, char** argv)
     publish_observation_maps(o_map, robot_pos, yaw, pos_publisher);
     
     //Update visual line of sight layer
+    double vision_meters = 5.0;
     o_map.clear("visual");
     int angle_increments =600;
     for(int i = 0; i<angle_increments; i++){
       double angle = i*2*M_PI/angle_increments;
-      iterate_visual_line(o_map, robot_pos, angle, 1.0);
+      iterate_visual_line(o_map, robot_pos, angle, vision_meters);
     }
     //Iterate through cells within a radius, accumulate UVC energy
-    double energy_radius = 3; 
+    double energy_radius = vision_meters; 
     double uvc_power = 0.1; //mW 
     for (CircleIterator iterator(o_map, robot_pos, energy_radius);
       !iterator.isPastEnd(); ++iterator) {
