@@ -14,6 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   grid_map_visualization
   roscpp
   rospy
+  std_msgs
+  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -23,7 +25,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-# catkin_python_setup()
+catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -59,7 +61,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Generate services in the 'srv' folder
  add_service_files(
    FILES
-   reset_uv.srv
+   Reset_uv.srv
 #   Service2.srv
  )
 
@@ -71,10 +73,10 @@ find_package(catkin REQUIRED COMPONENTS
 # )
 
 ## Generate added messages and services with any dependencies listed here
-# generate_messages(
-#   DEPENDENCIES
-#   std_msgs  # Or other packages containing msgs
-# )
+generate_messages(
+    DEPENDENCIES
+   std_msgs  # Or other packages containing msgs
+  )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -108,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
   INCLUDE_DIRS include
 #  LIBRARIES uvc_lamp
-  CATKIN_DEPENDS grid_map_core grid_map_ros grid_map_rviz_plugin grid_map_visualization roscpp rospy
+  CATKIN_DEPENDS grid_map_core grid_map_ros grid_map_rviz_plugin grid_map_visualization roscpp rospy message_runtime std_msgs
 #  DEPENDS system_lib
 )
 
@@ -172,10 +174,11 @@ target_link_libraries(uvc_progress ${catkin_LIBRARIES})
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-# catkin_install_python(PROGRAMS
+catkin_install_python(PROGRAMS
+    setup.py
 #   scripts/my_python_script
-#   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
-# )
+    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ )
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html

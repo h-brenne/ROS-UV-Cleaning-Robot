@@ -7,5 +7,5 @@
     <rosparam command="load" file="$(find uvc_lamp)/config/uvc_grid_map.yaml" />
   </node>
   <!-- Launch RViz with the demo configuration -->
-  <node name="rviz2" pkg="rviz" type="rviz" args="-d $(find grid_map_demos)/rviz/grid_map_demo.rviz" />
+  <node name="rviz2" pkg="rviz" type="rviz" args="-d $(find uvc_lamp)/rviz/uvc_rviz.rviz" />
 </launch>
