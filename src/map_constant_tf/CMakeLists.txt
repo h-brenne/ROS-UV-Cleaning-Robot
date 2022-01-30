@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(uvc_lamp)
+project(map_constant_tf)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -8,14 +8,7 @@ project(uvc_lamp)
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
-  grid_map_core
-  grid_map_ros
-  grid_map_rviz_plugin
-  grid_map_visualization
-  roscpp
   rospy
-  std_msgs
-  message_generation
 )
 
 ## System dependencies are found with CMake's conventions
@@ -25,7 +18,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
 ## See http://ros.org/doc/api/catkin/html/user_guide/setup_dot_py.html
-catkin_python_setup()
+# catkin_python_setup()
 
 ################################################
 ## Declare ROS messages, services and actions ##
@@ -59,11 +52,11 @@ catkin_python_setup()
 # )
 
 ## Generate services in the 'srv' folder
- add_service_files(
-   FILES
-   Reset_uv.srv
+# add_service_files(
+#   FILES
+#   Service1.srv
 #   Service2.srv
- )
+# )
 
 ## Generate actions in the 'action' folder
 # add_action_files(
@@ -73,10 +66,10 @@ catkin_python_setup()
 # )
 
 ## Generate added messages and services with any dependencies listed here
-generate_messages(
-    DEPENDENCIES
-   std_msgs  # Or other packages containing msgs
-  )
+# generate_messages(
+#   DEPENDENCIES
+#   std_msgs  # Or other packages containing msgs
+# )
 
 ################################################
 ## Declare ROS dynamic reconfigure parameters ##
@@ -108,9 +101,9 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  INCLUDE_DIRS include
-#  LIBRARIES uvc_lamp
-  CATKIN_DEPENDS grid_map_core grid_map_ros grid_map_rviz_plugin grid_map_visualization roscpp rospy message_runtime std_msgs
+#  INCLUDE_DIRS include
+#  LIBRARIES map_constant_tf
+#  CATKIN_DEPENDS rospy
 #  DEPENDS system_lib
 )
 
@@ -127,7 +120,7 @@ include_directories(
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/uvc_lamp.cpp
+#   src/${PROJECT_NAME}/map_constant_tf.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -138,18 +131,8 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/uvc_lamp_node.cpp)
+# add_executable(${PROJECT_NAME}_node src/map_constant_tf_node.cpp)
 
-add_executable(uvc_grid_map
-	src/uvc_grid_map.cpp
-	)
-target_link_libraries(uvc_grid_map ${catkin_LIBRARIES})
-
-add_executable(uvc_progress
-	src/uvc_progress.cpp
-	)
-target_link_libraries(uvc_progress ${catkin_LIBRARIES})
-#add_dependencies(uvc_grid_map uvc_lamp_uvc_grid_map_cpp)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -174,10 +157,10 @@ target_link_libraries(uvc_progress ${catkin_LIBRARIES})
 
 ## Mark executable scripts (Python etc.) for installation
 ## in contrast to setup.py, you can choose the destination
-catkin_install_python(PROGRAMS
-    setup.py
-#   scripts/my_python_script
-    DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+ catkin_install_python(PROGRAMS
+   nodes/saveMaptf.py
+   nodes/broadcastMaptf.py
+   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
  )
 
 ## Mark executables for installation
@@ -213,7 +196,7 @@ catkin_install_python(PROGRAMS
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_uvc_lamp.cpp)
+# catkin_add_gtest(${PROJECT_NAME}-test test/test_map_constant_tf.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
