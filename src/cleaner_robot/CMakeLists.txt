@@ -10,6 +10,7 @@ project(cleaner_robot)
 find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
+  actionlib
 )
 
 ## System dependencies are found with CMake's conventions
@@ -102,9 +103,9 @@ find_package(catkin REQUIRED COMPONENTS
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-#  INCLUDE_DIRS include
+  INCLUDE_DIRS include
 #  LIBRARIES cleaner_robot
-#  CATKIN_DEPENDS rospy std_msgs
+  CATKIN_DEPENDS rospy std_msgs actionlib geometry_msgs move_base_msgs
 #  DEPENDS system_lib
 )
 
@@ -118,6 +119,11 @@ include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
 )
+
+add_executable(cleaner_robot_nav_publisher
+  cleaner_robot_nav_publisher.cpp
+	)
+target_link_libraries(cleaner_robot_nav_publisher ${catkin_LIBRARIES})
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
