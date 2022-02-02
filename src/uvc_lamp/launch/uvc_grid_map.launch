@@ -1,6 +1,6 @@
 <launch>
   <!-- Launch the grid map simple demo node -->
-  <node pkg="uvc_lamp" type="uvc_grid_map" name="uvc_grid_map" output="screen" />
+  <node pkg="uvc_lamp" type="uvc_grid_map" name="uvc_grid_map" output="screen" launch-prefix="xterm -e gdb --args"/>
   <node pkg="uvc_lamp" type="uvc_progress" name="uvc_progress" output="screen" />
   <!-- Launch the grid map visualizer -->
   <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
