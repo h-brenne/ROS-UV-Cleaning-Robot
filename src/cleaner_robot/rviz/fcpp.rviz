@@ -31,24 +31,6 @@ Toolbars:
 Visualization Manager:
   Class: ""
   Displays:
-    - Alpha: 0.5
-      Cell Size: 1
-      Class: rviz/Grid
-      Color: 160; 160; 164
-      Enabled: true
-      Line Style:
-        Line Width: 0.029999999329447746
-        Value: Lines
-      Name: Grid
-      Normal Cell Count: 0
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Plane: XY
-      Plane Cell Count: 10
-      Reference Frame: <Fixed Frame>
-      Value: true
     - Class: rviz/TF
       Enabled: true
       Frame Timeout: 15
@@ -133,41 +115,6 @@ Visualization Manager:
       Topic: /move_base/SpiralSTC/plan
       Unreliable: false
       Value: true
-    - Angle Tolerance: 0.10000000149011612
-      Class: rviz/Odometry
-      Covariance:
-        Orientation:
-          Alpha: 0.5
-          Color: 255; 255; 127
-          Color Style: Unique
-          Frame: Local
-          Offset: 1
-          Scale: 1
-          Value: true
-        Position:
-          Alpha: 0.30000001192092896
-          Color: 204; 51; 204
-          Scale: 1
-          Value: true
-        Value: true
-      Enabled: false
-      Keep: 10000
-      Name: Odometry
-      Position Tolerance: 0.10000000149011612
-      Queue Size: 10
-      Shape:
-        Alpha: 1
-        Axes Length: 1
-        Axes Radius: 0.10000000149011612
-        Color: 255; 25; 0
-        Head Length: 0.019999999552965164
-        Head Radius: 0.05000000074505806
-        Shaft Length: 0.05000000074505806
-        Shaft Radius: 0.019999999552965164
-        Value: Arrow
-      Topic: /odom
-      Unreliable: false
-      Value: false
     - Class: rviz/Marker
       Enabled: true
       Marker Topic: /visualization_marker
@@ -178,41 +125,6 @@ Visualization Manager:
         goal point: true
       Queue Size: 100
       Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /move_base_flex/tracking_pid/interpolator
-      Name: Interpolator (mbf)
-      Namespaces:
-        {}
-      Queue Size: 100
-      Value: true
-    - Alpha: 0.30000001192092896
-      Class: rviz/Map
-      Color Scheme: map
-      Draw Behind: false
-      Enabled: true
-      Name: Coverage progress map
-      Topic: /coverage_grid
-      Unreliable: false
-      Use Timestamp: false
-      Value: true
-    - Class: rviz/Marker
-      Enabled: true
-      Marker Topic: /move_base/TrackingPidLocalPlanner/interpolator
-      Name: Interpolator (mb)
-      Namespaces:
-        {}
-      Queue Size: 100
-      Value: true
-    - Alpha: 1
-      Class: rviz/Polygon
-      Color: 25; 255; 0
-      Enabled: true
-      Name: Footprint
-      Queue Size: 10
-      Topic: /move_base_flex/global_costmap/footprint
-      Unreliable: false
-      Value: true
     - Alpha: 1
       Arrow Length: 0.05000000074505806
       Axes Length: 0.30000001192092896
@@ -222,7 +134,7 @@ Visualization Manager:
       Enabled: true
       Head Length: 0.07000000029802322
       Head Radius: 0.029999999329447746
-      Name: PoseArray
+      Name: AMCL
       Queue Size: 10
       Shaft Length: 0.23000000417232513
       Shaft Radius: 0.009999999776482582
@@ -258,30 +170,6 @@ Visualization Manager:
       Use Fixed Frame: true
       Use rainbow: true
       Value: true
-    - Alpha: 1
-      Buffer Length: 1
-      Class: rviz/Path
-      Color: 255; 255; 0
-      Enabled: true
-      Head Diameter: 0.30000001192092896
-      Head Length: 0.20000000298023224
-      Length: 0.30000001192092896
-      Line Style: Lines
-      Line Width: 0.029999999329447746
-      Name: Path
-      Offset:
-        X: 0
-        Y: 0
-        Z: 0
-      Pose Color: 255; 85; 255
-      Pose Style: None
-      Queue Size: 10
-      Radius: 0.029999999329447746
-      Shaft Diameter: 0.10000000149011612
-      Shaft Length: 0.10000000149011612
-      Topic: /move_base_flex/DWAPlannerROS/global_plan
-      Unreliable: false
-      Value: true
     - Alpha: 0.4000000059604645
       Autocompute Intensity Bounds: false
       Autocompute Value Bounds:
@@ -300,7 +188,7 @@ Visualization Manager:
       Max Intensity: 10
       Min Color: 0; 0; 0
       Min Intensity: 0
-      Name: PointCloud2
+      Name: UVC Energy
       Position Transformer: XYZ
       Queue Size: 10
       Selectable: true
@@ -311,6 +199,16 @@ Visualization Manager:
       Unreliable: false
       Use Fixed Frame: true
       Use rainbow: true
+      Value: true
+    - Alpha: 0.699999988079071
+      Class: rviz/Map
+      Color Scheme: map
+      Draw Behind: false
+      Enabled: true
+      Name: Visual LOS
+      Topic: /grid_map_visualization/visual
+      Unreliable: false
+      Use Timestamp: false
       Value: true
   Enabled: true
   Global Options:
@@ -349,10 +247,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Scale: 57.02756881713867
+      Scale: 53.19530487060547
       Target Frame: <Fixed Frame>
-      X: -2.418903350830078
-      Y: 0.6680750250816345
+      X: 1.2604464292526245
+      Y: 1.2344648838043213
     Saved: ~
 Window Geometry:
   Displays:

@@ -15,8 +15,8 @@
     <arg name="target_yaw_vel" default="10.00"/>
     <arg name="target_yaw_acc" default="100"/>
     <!-- Radius is sadly limited by door openings-->
-    <arg name="robot_radius" default="0.2"/>
-    <arg name="tool_radius" default="0.2"/>
+    <arg name="robot_radius" default="0.1"/>
+    <arg name="tool_radius" default="0.1"/>
     <arg name="rviz" default="true"/>
 
     <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
@@ -27,6 +27,21 @@
     <arg name="model" value="$(arg model)" />
   </include>
 
+    <!-- AMCL -->
+    <include file="$(find cleaner_robot)/launch/amcl_global.launch"/>
+    
+    <!-- Automatic map aligner. Spins the robot for a set time. Quite messy implementation, would be better to create a node-->
+    <arg name="alignment_time" default="20.0" />  
+    <node pkg="rostopic" type="rostopic" name="map_aligner" args="pub -r 10 /cmd_vel geometry_msgs/Twist  '{linear:  {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: 2.0}}'" launch-prefix="timeout -s SIGINT 3 "/>
+    <node pkg="rostopic" type="rostopic" name="map_aligner_stopper" args="pub -1 /move_base_simple/goal geometry_msgs/PoseStamped '{header:[0,now,'\''map'\''],pose:[[0.0,0.0,0.0],[0.0,0.0,0.0,1.0]]}' " launch-prefix="bash -c 'sleep $(arg alignment_time); $0 $@' "/>
+    
+    <!-- UVC lamp and energy -->
+  <node pkg="uvc_lamp" type="uvc_grid_map" name="uvc_grid_map" output="screen" launch-prefix="bash -c 'sleep $(arg alignment_time); $0 $@' "/>
+  <node pkg="uvc_lamp" type="uvc_progress" name="uvc_progress" output="screen" launch-prefix="bash -c 'sleep $(arg alignment_time); $0 $@' "/>
+  <!-- Launch the grid map visualizer -->
+  <node pkg="grid_map_visualization" type="grid_map_visualization" name="grid_map_visualization" output="screen">
+    <rosparam command="load" file="$(find uvc_lamp)/config/uvc_grid_map.yaml" />
+  </node>
     <!--Move base flex, using the full_coverage_path_planner-->
     <node pkg="mbf_costmap_nav" type="mbf_costmap_nav" respawn="false" name="move_base_flex" output="screen" required="true">
         <param name="tf_timeout" value="1.5"/>
@@ -47,8 +62,7 @@
         <param name="base_global_planner" value="SpiralSTC" />
     </node>
 
-     <!-- AMCL -->
-  <include file="$(find cleaner_robot)/launch/amcl_global.launch"/>
+   
 
 
     <!--We need a map to fully cover-->
