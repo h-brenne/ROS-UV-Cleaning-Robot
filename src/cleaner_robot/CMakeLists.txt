@@ -121,7 +121,7 @@ include_directories(
 )
 
 add_executable(cleaner_robot_nav_publisher
-  cleaner_robot_nav_publisher.cpp
+  src/cleaner_robot_nav_publisher.cpp
 	)
 target_link_libraries(cleaner_robot_nav_publisher ${catkin_LIBRARIES})
 
