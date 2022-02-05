@@ -130,11 +130,16 @@ int main(int argc, char** argv)
 {
   // Initialize node and publisher.
   ros::init(argc, argv, "uvc_grid_map");
-  ros::NodeHandle nh1("~");
-  ros::Publisher publisher = nh1.advertise<grid_map_msgs::GridMap>("grid_map", 5, true);  
+  //Start service to reset energy
+  ros::NodeHandle n;
+  ros::ServiceServer reset_uv_service = n.advertiseService("reset_uv", reset_uv);
+  ros::spinOnce();
+
+
+  ros::NodeHandle nh("~");
+  ros::Publisher publisher = nh.advertise<grid_map_msgs::GridMap>("grid_map", 1000, true);  
 
   // Get occupancy map from map_server, create layers
-  ros::NodeHandle n;
   ros::ServiceClient client = n.serviceClient<nav_msgs::GetMap>("static_map");
   nav_msgs::GetMap srv;
   
@@ -148,8 +153,7 @@ int main(int argc, char** argv)
     }
   o_map.setFrameId("map");
   o_map["energy"].setConstant(0.0);
-  //Start service to reset energy
-  ros::ServiceServer reset_uv_service = n.advertiseService("reset_uv", reset_uv);
+  
 
   // Setup tf listener to get robot position
   tf::TransformListener listener;
@@ -157,25 +161,28 @@ int main(int argc, char** argv)
 
   //Setup publisher of robot pos
   ros::NodeHandle nh2;
-  ros::Publisher pos_publisher = nh2.advertise<std_msgs::Float32MultiArray>("maps", 5, true);
+  ros::Publisher pos_publisher = nh2.advertise<std_msgs::Float32MultiArray>("maps", 100, true);
 
   // Work with grid map in a loop.
   double sampling_rate = 5.0;
   double sampling_time = 1/sampling_rate;
   ros::Rate rate(sampling_rate);
-  while (nh1.ok()) {
+  while (nh.ok()) {
     
 
     ros::Time time = ros::Time::now();
     
     //Get the robot position in the map
     try{
-      listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(1.0) );
+      listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(2.0) );
       listener.lookupTransform("odom","base_footprint",ros::Time(0), transform);
     }
     catch(tf::TransformException &ex){
       ROS_ERROR("%s",ex.what());
-      ros::Duration(1.0).sleep();
+
+      ros::spinOnce(); // Need to let service run, could otherwise cause deadlock
+
+      ros::Duration(0.2).sleep();
       continue;
     }
     Position robot_pos(transform.getOrigin().x(),transform.getOrigin().y());
@@ -185,15 +192,15 @@ int main(int argc, char** argv)
     publish_observation_maps(o_map, robot_pos, yaw, pos_publisher);
     
     //Update visual line of sight layer
-    double vision_meters = 2.0;
-    o_map["visual"].setConstant(0.0);
+    double vision_meters = 3.0;
+    o_map.clear("visual");
     int angle_increments =600;
     for(int i = 0; i<angle_increments; i++){
       double angle = i*2*M_PI/angle_increments;
       iterate_visual_line(o_map, robot_pos, angle, vision_meters);
     }
     //Iterate through cells within a radius, accumulate UVC energy
-    double energy_radius = vision_meters-0.5; 
+    double energy_radius = vision_meters; 
     double uvc_power = 0.1; //mW 
     for (CircleIterator iterator(o_map, robot_pos, energy_radius);
       !iterator.isPastEnd(); ++iterator) {
@@ -209,7 +216,7 @@ int main(int argc, char** argv)
     grid_map_msgs::GridMap message;
     GridMapRosConverter::toMessage(o_map, message);
     
-    //publisher.publish(message);
+    publisher.publish(message);
     
     //ROS_INFO_THROTTLE(3, "UVC Energy Grid map (timestamp %f) published.", message.info.header.stamp.toSec());
     // Wait for next cycle.
