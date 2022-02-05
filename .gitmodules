@@ -1,0 +1,6 @@
+[submodule "src/full_coverage_path_planner"]
+	path = src/full_coverage_path_planner
+	url = https://github.com/nobleo/full_coverage_path_planner.git
+[submodule "src/tracking_pid"]
+	path = src/tracking_pid
+	url = https://github.com/nobleo/tracking_pid.git
