@@ -164,7 +164,7 @@ int main(int argc, char** argv)
   ros::Publisher pos_publisher = nh2.advertise<std_msgs::Float32MultiArray>("maps", 100, true);
 
   // Work with grid map in a loop.
-  double sampling_rate = 5.0;
+  double sampling_rate = 10.0;
   double sampling_time = 1/sampling_rate;
   ros::Rate rate(sampling_rate);
   while (nh.ok()) {
@@ -174,8 +174,8 @@ int main(int argc, char** argv)
     
     //Get the robot position in the map
     try{
-      listener.waitForTransform("odom", "base_footprint", ros::Time(0), ros::Duration(2.0) );
-      listener.lookupTransform("odom","base_footprint",ros::Time(0), transform);
+      listener.waitForTransform("map", "base_footprint", ros::Time(0), ros::Duration(2.0) );
+      listener.lookupTransform("map","base_footprint",ros::Time(0), transform);
     }
     catch(tf::TransformException &ex){
       ROS_ERROR("%s",ex.what());
@@ -192,9 +192,9 @@ int main(int argc, char** argv)
     publish_observation_maps(o_map, robot_pos, yaw, pos_publisher);
     
     //Update visual line of sight layer
-    double vision_meters = 3.0;
+    double vision_meters = 6.0;
     o_map.clear("visual");
-    int angle_increments =600;
+    int angle_increments =1200;
     for(int i = 0; i<angle_increments; i++){
       double angle = i*2*M_PI/angle_increments;
       iterate_visual_line(o_map, robot_pos, angle, vision_meters);
