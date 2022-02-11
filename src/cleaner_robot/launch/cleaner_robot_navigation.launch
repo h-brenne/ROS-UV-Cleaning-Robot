@@ -1,7 +1,7 @@
 <launch>
   <!-- Arguments -->
   <arg name="model" default="$(env TURTLEBOT3_MODEL)" doc="model type [burger, waffle, waffle_pi]"/>
-  <arg name="map_file" default="$(find turtlebot3_navigation)/maps/map.yaml"/>
+  <arg name="map_file" default="$(find cleaner_robot)/maps/big_house2.yaml"/>
   <arg name="open_rviz" default="true"/>
   <arg name="move_forward_only" default="false"/>
 
@@ -22,6 +22,11 @@
     <arg name="move_forward_only" value="$(arg move_forward_only)"/>
   </include>
 
+<!-- Automatic map aligner. Spins the robot for a set time. Quite messy implementation, would be better to create a node-->
+    <arg name="alignment_time" default="20.0" />  
+    <node pkg="rostopic" type="rostopic" name="map_aligner" args="pub -r 10 /cmd_vel geometry_msgs/Twist  '{linear:  {x: 0.0, y: 0.0, z: 0.0}, angular: {x: 0.0,y: 0.0,z: 2.0}}'" launch-prefix="timeout -s SIGINT 3 "/>
+    <node pkg="rostopic" type="rostopic" name="map_aligner_stopper" args="pub -1 /move_base_simple/goal geometry_msgs/PoseStamped '{header:[0,now,'\''map'\''],pose:[[0.0,0.0,0.0],[0.0,0.0,0.0,1.0]]}' " launch-prefix="bash -c 'sleep $(arg alignment_time); $0 $@' "/>
+  
   <!-- rviz -->
   <group if="$(arg open_rviz)"> 
     <node pkg="rviz" type="rviz" name="rviz" required="true"
