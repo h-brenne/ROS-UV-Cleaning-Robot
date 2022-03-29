@@ -89,7 +89,7 @@ void publish_observation_maps(GridMap map, Position robot_pos, double yaw, ros::
   maps.layout.dim.push_back(std_msgs::MultiArrayDimension());
   maps.layout.dim.push_back(std_msgs::MultiArrayDimension());
   
-  int channels = 2;
+  int channels = 3;
 
   int stride0 = map.getSize().y()*map.getSize().x()*channels;
   int stride1 = map.getSize().x()*channels;
@@ -114,16 +114,17 @@ void publish_observation_maps(GridMap map, Position robot_pos, double yaw, ros::
     if (!isnan(map.at("occupancy", *iterator))){
       maps.data[stride1*index(1)+stride2*index(0)+0]=map.at("occupancy", *iterator);
     } else {
-      maps.data[stride1*index(1)+stride2*index(0)+0] = 100.0;
+      maps.data[stride1*index(1)+stride2*index(0)+0] = 100;
     }
     maps.data[stride1*index(1)+stride2*index(0)+1]=map.at("energy", *iterator);
+    maps.data[stride1*index(1)+stride2*index(0)+2] = 0;
   }
   
   //Add robot pos and yaw
   Index robot_index;
   map.getIndex(robot_pos, robot_index);
-  maps.data[stride1*robot_index(0)+stride2*robot_index(1)+0]= (M_PI +yaw)*10;//Positive values, scaled to get more resolution when converting to uint8
-
+  //maps.data[stride1*robot_index(0)+stride2*robot_index(1)+0]= (M_PI +yaw)*10;//Positive values, scaled to get more resolution when converting to uint8
+  maps.data[stride1*robot_index(1)+stride2*robot_index(0)+2]= 255;
   pub.publish(maps);
 }
 int main(int argc, char** argv)
@@ -164,7 +165,7 @@ int main(int argc, char** argv)
   ros::Publisher pos_publisher = nh2.advertise<std_msgs::Float32MultiArray>("maps", 1, true);
 
   // Work with grid map in a loop.
-  double sampling_rate = 1.0;
+  double sampling_rate = 5.0;
   double sampling_time = 1/sampling_rate;
   ros::Rate rate(sampling_rate);
   while (nh.ok()) {
